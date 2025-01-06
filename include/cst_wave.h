@@ -37,6 +37,12 @@
 /*  Waveforms                                                            */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Delete duplicate include                                           */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
 #ifndef _CST_WAVE_H__
 #define _CST_WAVE_H__
 
@@ -44,7 +50,6 @@
 #include "cst_error.h"
 #include "cst_alloc.h"
 #include "cst_endian.h"
-#include "cst_file.h"
 #include "cst_val.h"
 
 typedef struct  cst_wave_struct {
