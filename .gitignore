@@ -1,9 +1,10 @@
+# flite project
 bin
 build
-config/config
-config/system.mak
+include/flite_patch_*.h
+
+# flite project config logs
 config.log
 config.status
-include/flite_version.h
-main/flite_lang_list.c
-main/flite_voice_list.c
+config/config
+config/system.mak

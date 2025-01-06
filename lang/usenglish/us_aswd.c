@@ -39,7 +39,11 @@
 /*  Uses FSMs for start to Vowel and end back to vowel                   */
 /*                                                                       */
 /*************************************************************************/
+#ifdef WASM_NO_LIB
+#include "flite_patch_ctype.h"
+#else
 #include <ctype.h>
+#endif /* WASM_NO_LIB */
 #include "flite.h"
 #include "usenglish.h"
 #include "us_text.h"

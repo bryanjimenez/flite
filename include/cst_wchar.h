@@ -40,7 +40,11 @@
 #ifndef __CST_WCHAR_H__
 #define __CST_WCHAR_H__
 
+#ifdef WASM_NO_LIB
+#include "flite_patch_wchar.h"
+#else
 #include <wchar.h>
+#endif /* WASM_NO_LIB */
 
 wchar_t *cst_cstr2wstr(const char *s);
 char *cst_wstr2cstr(const wchar_t *s);

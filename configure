@@ -4177,6 +4177,9 @@ case "$target_os" in
   wasi)
     CFLAGS="$CFLAGS -DDIE_ON_ERROR -DCST_NO_SOCKETS -DWASM32_WASI"
   ;;
+  unknown|none)
+    CFLAGS="$CFLAGS -DDIE_ON_ERROR -DCST_NO_SOCKETS -DWASM_NO_LIB"
+  ;;
 esac
 
 
@@ -4342,7 +4345,12 @@ else
    then
       STDIOTYPE=wince
    else
-      STDIOTYPE=stdio
+      if test "$target_os" = "unknown"
+      then
+        STDIOTYPE=none
+      else
+        STDIOTYPE=stdio
+      fi
    fi
 fi
 
@@ -4400,6 +4408,11 @@ case "$target_os" in
         AUDIOLIBS=
      ;;
      chrome*)
+	AUDIODRIVER="none"
+	AUDIODEFS=-DCST_AUDIO_NONE
+	AUDIOLIBS=
+     ;;
+     unknown|none)
 	AUDIODRIVER="none"
 	AUDIODEFS=-DCST_AUDIO_NONE
 	AUDIOLIBS=

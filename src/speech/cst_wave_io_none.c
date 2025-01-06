@@ -2,7 +2,7 @@
 /*                                                                       */
 /*                  Language Technologies Institute                      */
 /*                     Carnegie Mellon University                        */
-/*                         Copyright (c) 2008                            */
+/*                         Copyright (c) 2000                            */
 /*                        All Rights Reserved.                           */
 /*                                                                       */
 /*  Permission is hereby granted, free of charge, to use and distribute  */
@@ -31,73 +31,129 @@
 /*                                                                       */
 /*************************************************************************/
 /*             Author:  Alan W Black (awb@cs.cmu.edu)                    */
-/*               Date:  May 2008                                         */
+/*               Date:  August 2000                                      */
 /*************************************************************************/
 /*                                                                       */
-/*  To avoid an initialization phase where regexes need to be set up we  */
-/*  precompile them into statics that can be used directly --            */
-/*  (dhd championed this technique, and this is a reimplementation of    */
-/*  his compilation technique this)                                      */
+/*  Waveforms                                                            */
 /*                                                                       */
 /*************************************************************************/
+#include "cst_string.h"
+#include "cst_wave.h"
+#include "cst_file.h"
 
-#ifdef WASM_NO_LIB
-#include "flite_patch_stdio.h"
-#include "flite_patch_string.h"
-#else
-#include <stdio.h>
-#include <string.h>
-#include <sys/time.h>
-#include <unistd.h>
-#endif /* WASM_NO_LIB */
-
-#include "flite.h"
-
-static void compregex_usage()
+void cst_wave_resample(cst_wave *w, int sample_rate)
 {
-    printf("compregex: compile regexes into C structures\n");
-    printf("usage: compregex name regex\n"
-           "  Compiles regex into a C structure called name\n");
-    exit(0);
-}
+    /* This is here so that it won't necessarily be linked in tight-space */
+    /* platforms like PalmOS                                              */
 
-static void regex_to_C(const char *name, const cst_regex *rgx)
-{
-    int i;
+    cst_rateconv *filt;
+    int up, down;
+    short *in;
+    const short *inptr;
+    short *outptr;
+    int n, insize, outsize;
 
-    printf("static const unsigned char %s_rxprog[] = {\n   ",name);
-    for (i=0; i<rgx->regsize; i++)
-    {
-        printf("%d, ", (unsigned char)rgx->program[i]);
-        if (i%16 == 15)
-            printf("\n   ");
+    /* Sure, we could take the GCD.  In practice, though, this
+       gives us what we want and makes things go faster. */
+    down = w->sample_rate / 1000;
+    up = sample_rate / 1000;
+
+    if (up < 1 || down < 1) {
+	cst_errmsg("cst_wave_resample: invalid input/output sample rates (%d, %d)\n",
+		   up * 1000, down * 1000);
+	cst_error();
     }
-    printf("\n};\n");
-    printf("static const cst_regex %s_rx = {\n   ",name);
-    printf("%d, ",rgx->regstart);
-    printf("%d, ",rgx->reganch);
-    if (rgx->regmust == NULL)
-        printf("NULL, ");
-    else
-        printf("%s_rxprog + %ld, ", name, (long int)(rgx->regmust - rgx->program));
-    printf("%d, ",rgx->regmlen);
-    printf("%d,\n   ",rgx->regsize);
-    printf("(char *)%s_rxprog\n",name);
-    printf("};\n");
 
-    printf("const cst_regex * const %s = &%s_rx;\n\n",name, name);
+    filt = new_rateconv(up, down, w->num_channels);
+
+    inptr = in = w->samples;
+    insize = w->num_samples;
+
+    w->num_samples = w->num_samples * up / down + 2048;
+    w->samples = cst_alloc(short, w->num_samples * w->num_channels);
+    w->sample_rate = sample_rate;
+
+    outptr = w->samples;
+    outsize = w->num_samples;
+
+    while ((n = cst_rateconv_in(filt, inptr, insize)) > 0) {
+	inptr += n;
+	insize -= n;
+
+	while ((n = cst_rateconv_out(filt, outptr, outsize)) > 0) {
+	    outptr += n;
+	    outsize -= n;
+	}
+    }
+    cst_rateconv_leadout(filt);
+    while ((n = cst_rateconv_out(filt, outptr, outsize)) > 0) {
+	outptr += n;
+	outsize -= n;
+    }
+
+    cst_free(in);
+    delete_rateconv(filt);
+
 }
 
-int main(int argc, char **argv)
+
+int cst_wave_save(cst_wave *w,const char *filename,const char *type)
 {
-    cst_regex *rgx;
-
-    if (argc != 3)
-        compregex_usage();
-
-    rgx = new_cst_regex(argv[2]);
-    regex_to_C(argv[1],rgx);
-    delete_cst_regex(rgx);
-    
     return 0;
 }
+
+int cst_wave_save_raw(cst_wave *w, const char *filename)
+{
+    return 0;
+}
+
+int cst_wave_save_raw_fd(cst_wave *w, cst_file fd)
+{
+    return 0;
+}
+
+
+
+
+int cst_wave_append_riff(cst_wave *w,const char *filename)
+{
+    return 0;
+}
+
+
+int cst_wave_save_riff(cst_wave *w,const char *filename) {
+    return 0;
+}
+
+int cst_wave_save_riff_fd(cst_wave *w, cst_file fd) {
+    return 0;
+}
+
+int cst_wave_load_raw(cst_wave *w,const char *filename,
+		      const char *bo, int sample_rate){
+    return 0;
+}
+
+
+int cst_wave_load_raw_fd(cst_wave *w, cst_file fd,
+			 const char *bo, int sample_rate)
+{
+    return 0;
+}
+
+int cst_wave_load_riff(cst_wave *w,const char *filename)
+{
+    return 0;
+}
+
+int cst_wave_load_riff_header(cst_wave_header *header,cst_file fd)
+{
+    return 0;
+}
+
+
+int cst_wave_load_riff_fd(cst_wave *w,cst_file fd)
+{
+    return 0;
+}
+

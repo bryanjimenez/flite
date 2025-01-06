@@ -106,7 +106,10 @@ static void parse_usage(const char *progname,
 {
     cst_errmsg("%s: %s %s\n", progname,s1,s2);
     cst_errmsg("%s\n",description);
+	#ifdef WASM_NO_LIB
+    #else
     exit(0);
+	#endif
 }
 
 static void parse_description(const char *description, cst_features *f)

@@ -40,7 +40,11 @@
 /*                                                                       */
 /*************************************************************************/
 
+#ifdef WASM_NO_LIB
+#include "flite_patch_ctype.h"
+#else
 #include <ctype.h>
+#endif /* WASM_NO_LIB */
 #include "us_text.h"
 
 static const char * const digit2num[] = {

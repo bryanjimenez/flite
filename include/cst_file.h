@@ -54,8 +54,13 @@ typedef HANDLE cst_file;
 #include <System/StdIOPalm.h>
 typedef FILE * cst_file;
 #else
+#ifdef WASM_NO_LIB
+#include "flite_patch_stdio.h"
+typedef FILE * cst_file;
+#else
 #include <stdio.h>
 typedef FILE * cst_file;
+#endif /* WASM_NO_LIB */
 #endif
 
 /* File mapping stuff */

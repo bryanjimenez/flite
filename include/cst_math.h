@@ -45,7 +45,11 @@
 /* We actually don't use it but it allows the system to compile */
 /* #include <fdlibm.h> */
 #else
+#ifdef WASM_NO_LIB
+#include "flite_patch_math.h"
+#else
 #include <math.h>
+#endif /* WASM_NO_LIB */
 #endif
 
 #endif

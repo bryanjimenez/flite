@@ -40,7 +40,11 @@
 #ifndef __CST_STRING_H__
 #define __CST_STRING_H__
 
+#ifdef WASM_NO_LIB
+#include "flite_patch_string.h"
+#else
 #include <string.h>
+#endif /* WASM_NO_LIB */
 
 #if defined(UNDER_CE) && (UNDER_CE < 300)
 #define isalnum(a) iswalnum((wint_t)(a))

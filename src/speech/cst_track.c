@@ -79,19 +79,32 @@ void cst_track_resize(cst_track *t,int num_frames, int num_channels)
     int i;
 
     n_times = cst_alloc(float,num_frames);
+    #ifdef WASM_NO_LIB
+    WASM_PATCH_memmove(n_times,t->times,
+	    (sizeof(float)*((num_frames < t->num_frames) ? 
+			    num_frames : t->num_frames)));
+    #else
     memmove(n_times,t->times,
 	    (sizeof(float)*((num_frames < t->num_frames) ? 
 			    num_frames : t->num_frames)));
+    #endif /* WASM_NO_LIB */
     n_frames = cst_alloc(float*,num_frames);
     for (i=0; i<num_frames; i++)
     {
 	n_frames[i] = cst_alloc(float,num_channels);
 	if (i<t->num_frames)
 	{
+        #ifdef WASM_NO_LIB
+        WASM_PATCH_memmove(n_frames[i],
+		    t->frames[i],
+		    sizeof(float)*((num_channels < t->num_channels) ?
+				   num_channels : t->num_channels));
+	    #else
 	    memmove(n_frames[i],
 		    t->frames[i],
 		    sizeof(float)*((num_channels < t->num_channels) ?
 				   num_channels : t->num_channels));
+	    #endif /* WASM_NO_LIB */
 	    cst_free(t->frames[i]);
 	}
     }
@@ -112,14 +125,22 @@ cst_track *cst_track_copy(const cst_track *t)
 
     t2 = new_track();
     t2->times = cst_alloc(float,t->num_frames);
+    #ifdef WASM_NO_LIB
+    WASM_PATCH_memmove(t2->times,t->times, (sizeof(float)*t->num_frames));
+    #else
     memmove(t2->times,t->times, (sizeof(float)*t->num_frames));
+    #endif /* WASM_NO_LIB */
     t2->num_frames = t->num_frames;
     t2->num_channels = t->num_channels;
     t2->frames = cst_alloc(float *,t->num_frames);
     for (i=0; i<t2->num_frames; i++)
     {
         t2->frames[i] = cst_alloc(float,t2->num_channels);
+        #ifdef WASM_NO_LIB
+        WASM_PATCH_memmove(t2->frames[i],t->frames[i], sizeof(float)*t2->num_channels);
+        #else
         memmove(t2->frames[i],t->frames[i], sizeof(float)*t2->num_channels);
+        #endif /* WASM_NO_LIB */
     }
 
     return t2;

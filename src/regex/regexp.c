@@ -38,7 +38,11 @@
  * Beware that some of this code is subtly aware of the way operator
  * precedence is structured in regular expressions.  Serious changes in
  * regular-expression syntax might require a total rethink.  */
+#ifdef WASM_NO_LIB
+#include "flite_patch_ctype.h"
+#else
 #include <ctype.h>
+#endif /* WASM_NO_LIB */
 #include "cst_alloc.h"
 #include "cst_string.h"
 #include "cst_file.h"

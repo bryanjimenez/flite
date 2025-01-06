@@ -1,0 +1,7 @@
+#
+#  The minimal languages, lexicons and voices for wasm
+LEXES = cmulex
+LANGS = usenglish
+VOXES = cmu_us_kal
+EXTRABINS =
+

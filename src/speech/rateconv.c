@@ -258,8 +258,13 @@ filtering_on_buffers(cst_rateconv *filt)
 			filt->inoffset = (filt->cycctr * filt->down)/filt->up;
 			if ((filt->inbaseidx + filt->inoffset + filt->len) > insize) {
 				filt->inbaseidx -= insize - filt->len + 1;
+				#ifdef WASM_NO_LIB
+				WASM_PATCH_memcpy(filt->sin, filt->sin + insize - filt->lag,
+				       filt->lag * sizeof(int));
+				#else
 				memcpy(filt->sin, filt->sin + insize - filt->lag,
 				       filt->lag * sizeof(int));
+				#endif /* WASM_NO_LIB */
 				/* Prevent people from re-filtering the same stuff. */
 				filt->incount = 0;
 				return 0;
@@ -357,7 +362,12 @@ cst_rateconv_in(cst_rateconv *filt, const short *inptr, int max)
 	if (max > filt->insize - filt->lag)
 		max = filt->insize - filt->lag;
 	if (max > 0) {
+		#ifdef WASM_NO_LIB
+		WASM_PATCH_memcpy(filt->sin + filt->lag, inptr, max * sizeof(short));
+		#else
 		memcpy(filt->sin + filt->lag, inptr, max * sizeof(short));
+		#endif /* WASM_NO_LIB */
+
 		sample_to_int((short *)(filt->sin + filt->lag), max);
 	}
 	filt->incount = max;
@@ -377,14 +387,22 @@ cst_rateconv_out(cst_rateconv *filt, short *outptr, int max)
 	if (max > outsize)
 		max = outsize;
 	int_to_sample((short *)filt->sout, max);
+	#ifdef WASM_NO_LIB
+	WASM_PATCH_memcpy(outptr, filt->sout, max * sizeof(short));
+	#else
 	memcpy(outptr, filt->sout, max * sizeof(short));
+	#endif /* WASM_NO_LIB */
 	return max;
 }
 
 int
 cst_rateconv_leadout(cst_rateconv *filt)
 {
+	#ifdef WASM_NO_LIB
+	WASM_PATCH_memset(filt->sin + filt->lag, 0, filt->lag * sizeof(int));
+	#else
 	memset(filt->sin + filt->lag, 0, filt->lag * sizeof(int));
+	#endif /* WASM_NO_LIB */
 	filt->incount = filt->lag;
 	return filt->lag;
 }

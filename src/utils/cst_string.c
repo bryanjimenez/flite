@@ -37,9 +37,15 @@
 /*    String manipulation functions                                      */
 /*                                                                       */
 /*************************************************************************/
+#ifdef WASM_NO_LIB
+#include "flite_patch_stdlib.h"
+#include "flite_patch_string.h"
+#include "flite_patch_ctype.h"
+#else
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#endif /* WASM_NO_LIB */
 #include "cst_alloc.h"
 #include "cst_string.h"
 #include "cst_file.h"
@@ -85,7 +91,11 @@ cst_string *cst_strdup(const cst_string *str)
     if (str)
     {
 	nstr = cst_alloc(cst_string,cst_strlen((const char *)str)+1);
+    #ifdef WASM_NO_LIB
+	WASM_PATCH_memmove(nstr,str,cst_strlen((const char *)str)+1);
+    #else
 	memmove(nstr,str,cst_strlen((const char *)str)+1);
+    #endif /* WASM_NO_LIB */
     }
     return nstr;
 }

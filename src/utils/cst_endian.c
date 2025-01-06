@@ -37,7 +37,11 @@
 /*  Some code for byte order support                                     */
 /*                                                                       */
 /*************************************************************************/
+#ifdef WASM_NO_LIB
+#include "flite_patch_stdlib.h"
+#else
 #include <stdlib.h>
+#endif /* WASM_NO_LIB */
 #include "cst_alloc.h"
 #include "cst_endian.h"
 
