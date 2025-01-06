@@ -37,6 +37,13 @@
 /*  Access to audio devices                                   ,          */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
 #include "cst_string.h"
 #include "cst_wave.h"
 #include "cst_audio.h"

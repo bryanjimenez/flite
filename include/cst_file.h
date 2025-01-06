@@ -37,6 +37,13 @@
 /*  Some File stuff                                                      */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
 #ifndef _CST_FILE_H__
 #define _CST_FILE_H__
 
@@ -54,8 +61,13 @@ typedef HANDLE cst_file;
 #include <System/StdIOPalm.h>
 typedef FILE * cst_file;
 #else
+#ifdef WASM_NO_LIB
+#include "flite_patch_stdio.h"
+typedef FILE * cst_file;
+#else
 #include <stdio.h>
 typedef FILE * cst_file;
+#endif /* WASM_NO_LIB */
 #endif
 
 /* File mapping stuff */

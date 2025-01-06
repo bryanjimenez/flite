@@ -5,5 +5,6 @@ config/system.mak
 config.log
 config.status
 include/flite_version.h
+include/flite_patch_*.h
 main/flite_lang_list.c
 main/flite_voice_list.c

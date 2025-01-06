@@ -37,6 +37,13 @@
 /*  Argument/usage command parser (like that in EST)                     */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
 #include "cst_tokenstream.h"
 #include "cst_features.h"
 
@@ -106,7 +113,10 @@ static void parse_usage(const char *progname,
 {
     cst_errmsg("%s: %s %s\n", progname,s1,s2);
     cst_errmsg("%s\n",description);
+    #ifdef WASM_NO_LIB
+    #else
     exit(0);
+    #endif
 }
 
 static void parse_description(const char *description, cst_features *f)

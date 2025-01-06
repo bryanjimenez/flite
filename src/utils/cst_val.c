@@ -37,6 +37,13 @@
 /*  Typed values                                                          */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
 #include "cst_math.h"
 #include "cst_file.h"
 #include "cst_val.h"
@@ -499,7 +506,9 @@ cst_val *cst_utf8_explode(const cst_string *utf8string)
     while ((c0 = *str))
     {
         charlength = utf8_sequence_length(c0);
+        #ifndef WASM_NO_LIB
         cst_snprintf(utf8char, charlength + 1, "%s", str);
+        #endif /* WASM_NO_LIB */
         chars = cons_val(string_val(utf8char),chars);
         str += charlength;
     }

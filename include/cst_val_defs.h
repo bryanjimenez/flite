@@ -37,10 +37,21 @@
 /*  Macros for user defined type objects                                 */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
 #ifndef _CST_VAL_DEFS_H__
 #define _CST_VAL_DEFS_H__
 
+#ifdef WASM_NO_LIB
+#include "flite_patch_stdlib.h"
+#else
 #include <stdlib.h>
+#endif /* WASM_NO_LIB */
 
 /* Macro for defining new user structs as vals  */
 #define CST_VAL_USER_TYPE_DCLS(NAME,TYPE)              \

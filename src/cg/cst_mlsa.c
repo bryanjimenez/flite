@@ -54,6 +54,12 @@
 /*  Integrate as a Voice Conversion module                           */
 /*                                                                   */
 /*-------------------------------------------------------------------*/
+/*    MODIFIED:                                                      */
+/*    Minimal support for wasm32-unknown-unknown                     */
+/*       Authors:  Bryan Jimenez                                     */
+/*          Date:  Dec 2024                                          */
+/*                                                                   */
+/*********************************************************************/
 
 #include "cst_alloc.h"
 #include "cst_string.h"
@@ -239,7 +245,11 @@ static double plus_or_minus_one()
 {
     /* Randomly return 1 or -1 */
     /* not sure rand() is portable */
+#ifdef WASM_NO_LIB
+    if (WASM_PATCH_rand() > RAND_MAX/2.0)
+#else
     if (rand() > RAND_MAX/2.0)
+#endif /* WASM_NO_LIB */
         return 1.0;
     else
         return -1.0;
@@ -388,7 +398,11 @@ static void vocoder(double p, double *mc,
     }
    
     vs->p1 = p;
+    #ifdef WASM_NO_LIB
+    WASM_PATCH_memmove(vs->c,vs->cc,sizeof(double)*(m+1));
+    #else
     memmove(vs->c,vs->cc,sizeof(double)*(m+1));
+    #endif /* WASM_NO_LIB */
    
     return;
 }
@@ -590,7 +604,12 @@ static void freqt (double *c1, int m1, double *c2, int m2, double a, VocoderSetu
          vs->g[j] = vs->d[j-1]+a*((vs->d[j]=vs->g[j])-vs->g[j-1]);
    }
 
+    #ifdef WASM_NO_LIB
+   WASM_PATCH_memmove(c2,vs->g,sizeof(double)*(m2+1));
+    #else
    memmove(c2,vs->g,sizeof(double)*(m2+1));
+    #endif /* WASM_NO_LIB */
+
    
    return;
 }

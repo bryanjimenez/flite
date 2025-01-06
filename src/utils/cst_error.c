@@ -37,15 +37,27 @@
 /*   Error mechanism                                                     */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
+#ifdef WASM_NO_LIB
+#include "flite_patch_stdlib.h"
+#include "flite_patch_stdarg.h"
+#include "flite_patch_logging.h"
+#else
 #include <stdlib.h>
 #include <stdarg.h>
+#endif /* WASM_NO_LIB */
 #include "cst_file.h"
 #include "cst_error.h"
 
 #ifdef UNDER_CE
 
 #include <winbase.h>
-#include <stdlib.h>
 #include "cst_alloc.h"
 
 int cst_errmsg(const char *fmt, ...)
@@ -91,20 +103,30 @@ int cst_errmsg(const char *fmt, ...)
 }
 #else
 
-#ifndef WASM32_WASI
+#if !defined WASM32_WASI && !defined WASM_NO_LIB
 jmp_buf *cst_errjmp = 0;
 #endif
 
+#ifdef WASM_NO_LIB
+int cst_errmsg(const char *fmt, ...)
+{
+    unimplemented("cst_errmsg");
+    return 0;
+}
+#else
 int cst_errmsg(const char *fmt, ...)
 {
     va_list args;
     int rv;
 
     va_start(args, fmt);
+    #ifndef WASM_NO_LIB
     rv = vfprintf(stderr, fmt, args);
+    #endif /* WASM_NO_LIB */
     va_end(args);
 
     return rv;
 }
+#endif /* WASM_NO_LIB */
 
 #endif

@@ -37,6 +37,13 @@
 /*  Waveforms                                                            */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
 #include "cst_string.h"
 #include "cst_wave.h"
 #include "cst_file.h"
@@ -98,6 +105,9 @@ void cst_wave_resample(cst_wave *w, int sample_rate)
 
 int cst_wave_save(cst_wave *w,const char *filename,const char *type)
 {
+    #ifdef WASM_NO_LIB
+    return 0;
+    #else
     if (cst_streq(type,"riff"))
 	return cst_wave_save_riff(w,filename);
 /*    else if (cst_streq(type,"aiff"))
@@ -112,10 +122,14 @@ int cst_wave_save(cst_wave *w,const char *filename,const char *type)
 		   type);
 	return -1;
     }
+    #endif /* WASM_NO_LIB */
 }
 
 int cst_wave_save_raw(cst_wave *w, const char *filename)
 {
+    #ifdef WASM_NO_LIB
+    return 0;
+    #else
     cst_file fd;
     int rv;
 
@@ -130,20 +144,28 @@ int cst_wave_save_raw(cst_wave *w, const char *filename)
     cst_fclose(fd);
 
     return rv;
+    #endif /* WASM_NO_LIB */
 }
 
 int cst_wave_save_raw_fd(cst_wave *w, cst_file fd)
 {
+    #ifdef WASM_NO_LIB
+    return 0;
+    #else
     if (cst_fwrite(fd, cst_wave_samples(w),
 		   sizeof(short), cst_wave_num_samples(w)) == cst_wave_num_samples(w))
 	return 0;
     else
 	return -1;
+    #endif /* WASM_NO_LIB */
 }
 
 
 int cst_wave_append_riff(cst_wave *w,const char *filename)
 {
+    #ifdef WASM_NO_LIB
+    return 0;
+    #else
     /* Appends to wave in file if it already exists */
     cst_file fd;
     cst_wave_header hdr;
@@ -212,10 +234,14 @@ int cst_wave_append_riff(cst_wave *w,const char *filename)
     cst_fclose(fd);
 
     return rv;
+    #endif /* WASM_NO_LIB */
 }
 
 int cst_wave_save_riff(cst_wave *w,const char *filename)
 {
+    #ifdef WASM_NO_LIB
+    return 0;
+    #else
     cst_file fd;
     int rv;
 
@@ -230,10 +256,14 @@ int cst_wave_save_riff(cst_wave *w,const char *filename)
     cst_fclose(fd);
 
     return rv;
+    #endif /* WASM_NO_LIB */
 }
 
 int cst_wave_save_riff_fd(cst_wave *w, cst_file fd)
 {
+    #ifdef WASM_NO_LIB
+    return 0;
+    #else
     const char *info;
     short d_short;
     int d_int, n;
@@ -307,11 +337,15 @@ int cst_wave_save_riff_fd(cst_wave *w, cst_file fd)
     else
 	return 0;
 	
+    #endif /* WASM_NO_LIB */
 }
 
 int cst_wave_load_raw(cst_wave *w,const char *filename,
 		      const char *bo, int sample_rate)
 {
+    #ifdef WASM_NO_LIB
+    return 0;
+    #else
     cst_file fd;
     int r;
 
@@ -327,11 +361,15 @@ int cst_wave_load_raw(cst_wave *w,const char *filename,
     cst_fclose(fd);
     
     return r;
+    #endif /* WASM_NO_LIB */
 }
 
 int cst_wave_load_raw_fd(cst_wave *w, cst_file fd,
 			 const char *bo, int sample_rate)
 {
+    #ifdef WASM_NO_LIB
+    return 0;
+    #else
     long size;
 
     /* Won't work on pipes, tough luck... */
@@ -347,10 +385,14 @@ int cst_wave_load_raw_fd(cst_wave *w, cst_file fd,
 	    swap_bytes_short(w->samples,w->num_samples);
 
     return 0;
+    #endif /* WASM_NO_LIB */
 }
 
 int cst_wave_load_riff(cst_wave *w,const char *filename)
 {
+    #ifdef WASM_NO_LIB
+    return 0;
+    #else
     cst_file fd;
     int r;
 
@@ -366,10 +408,14 @@ int cst_wave_load_riff(cst_wave *w,const char *filename)
     cst_fclose(fd);
     
     return r;
+    #endif /* WASM_NO_LIB */
 }
 
 int cst_wave_load_riff_header(cst_wave_header *header,cst_file fd)
 {
+    #ifdef WASM_NO_LIB
+    return 0;
+    #else
     char info[4];
     short d_short;
     int d_int;
@@ -415,10 +461,14 @@ int cst_wave_load_riff_header(cst_wave_header *header,cst_file fd)
     cst_fread(fd,&d_short,2,1);            /* bits per sample */
 
     return CST_OK_FORMAT;
+    #endif /* WASM_NO_LIB */
 }
 
 int cst_wave_load_riff_fd(cst_wave *w,cst_file fd)
 {
+    #ifdef WASM_NO_LIB
+    return 0;
+    #else
     cst_wave_header hdr;
     int rv;
     char info[4];
@@ -480,4 +530,5 @@ int cst_wave_load_riff_fd(cst_wave *w,cst_file fd)
 	swap_bytes_short(w->samples,w->num_samples);
 
     return CST_OK_FORMAT;
+    #endif /* WASM_NO_LIB */
 }

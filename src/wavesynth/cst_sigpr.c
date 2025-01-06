@@ -37,6 +37,12 @@
 /*  Signal processing functions                                          */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
 
 #include "cst_math.h"
 #include "cst_hrg.h"
@@ -124,7 +130,11 @@ cst_wave *lpc_resynth_windows(cst_lpcres *lpcres)
 	    lpccoefs[k] = ((float)(((double)lpcres->frames[i][k])/65535.0)*
 			   lpcres->lpc_range) + lpcres->lpc_min;
 	}
+    #ifdef WASM_NO_LIB
+	WASM_PATCH_memset(outbuf,0,sizeof(float)*(1+lpcres->num_channels));
+    #else
 	memset(outbuf,0,sizeof(float)*(1+lpcres->num_channels)); 
+    #endif /* WASM_NO_LIB */
 
 	/* resynthesis the signal */
 	for (j=0; j < pm_size_samps; j++,r++)

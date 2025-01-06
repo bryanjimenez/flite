@@ -40,11 +40,22 @@
 /*  his compilation technique this)                                      */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
 
+#ifdef WASM_NO_LIB
+#include "flite_patch_stdio.h"
+#include "flite_patch_string.h"
+#else
 #include <stdio.h>
 #include <string.h>
 #include <sys/time.h>
 #include <unistd.h>
+#endif /* WASM_NO_LIB */
 
 #include "flite.h"
 

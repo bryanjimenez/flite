@@ -37,6 +37,13 @@
 /*  Waveforms                                                            */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
 #include "cst_string.h"
 #include "cst_val.h"
 #include "cst_sts.h"
@@ -84,7 +91,11 @@ void lpcres_resize_samples(cst_lpcres *l,int num_samples)
 {
     l->residual = cst_alloc(unsigned char,num_samples);
     /* mulaw for 0 is 255 */
+    #ifdef WASM_NO_LIB
+    WASM_PATCH_memset(l->residual,255,num_samples);
+    #else
     memset(l->residual,255,num_samples);
+    #endif /* WASM_NO_LIB */
     l->num_samples = num_samples;
 
 }

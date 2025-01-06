@@ -37,10 +37,21 @@
 /*  Error handler                                                        */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
 #ifndef _CST_ERROR_H__
 #define _CST_ERROR_H__
 
+#ifdef WASM_NO_LIB
+#include "flite_patch_stdlib.h"
+#else
 #include <stdlib.h>
+#endif /* WASM_NO_LIB */
 
 #ifdef DIE_ON_ERROR
 # ifdef UNDER_CE
@@ -62,6 +73,8 @@ void longjmp(register jmp_buf env, register int value);
 /* I've never tested this or even compiled it (Flite is ARM compiled) */
 #  define cst_error() ErrFatalDisplayIf(-1, "cst_error")
 #endif
+#elif WASM_NO_LIB
+#  define cst_error() abort()
 #else /* not palmos */
 #include <setjmp.h>
 extern jmp_buf *cst_errjmp;

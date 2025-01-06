@@ -37,6 +37,13 @@
 /*  Math wrapper                                                         */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
 #ifndef _CST_MATH_H__
 #define _CST_MATH_H__
 
@@ -45,7 +52,11 @@
 /* We actually don't use it but it allows the system to compile */
 /* #include <fdlibm.h> */
 #else
+#ifdef WASM_NO_LIB
+#include "flite_patch_math.h"
+#else
 #include <math.h>
+#endif /* WASM_NO_LIB */
 #endif
 
 #endif

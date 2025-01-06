@@ -37,6 +37,13 @@
 /*  Basic wraparounds for malloc and free                                */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
 #include "cst_file.h"
 #include "cst_alloc.h"
 #include "cst_error.h"
@@ -91,7 +98,11 @@ void *cst_safe_alloc(int size)
 #ifdef UNDER_CE
     p = (void *)LocalAlloc(LPTR, size);
 #else
+#ifdef WASM_NO_LIB
+    p = (void *)WASM_PATCH_calloc(1,size);
+#else
     p = (void *)calloc(size,1);
+#endif /* WASM_NO_LIB */
 #endif
 
 #ifdef CST_DEBUG_MALLOC
@@ -141,7 +152,11 @@ void *cst_safe_realloc(void *p,int size)
 #ifdef UNDER_CE
 	np = LocalReAlloc((HLOCAL)p, size, LMEM_MOVEABLE|LMEM_ZEROINIT);
 #else
+    #ifdef WASM_NO_LIB
+	np = WASM_PATCH_realloc(p,size);
+    #else
 	np = realloc(p,size);
+    #endif /* WASM_NO_LIB */
 #endif
 
     if (np == NULL)
@@ -182,7 +197,11 @@ void cst_free(void *p)
 	    cst_error();
 	}
 #else
+    #ifdef WASM_NO_LIB
+        WASM_PATCH_free(p);
+    #else
 	free(p);
+    #endif /* WASM_NO_LIB */
 #endif
 #endif
     }

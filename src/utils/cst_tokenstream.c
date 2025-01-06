@@ -37,6 +37,13 @@
 /*  Tokenizer for strings and files                                      */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
 #include "cst_tokenstream.h"
 
 const cst_string * const cst_ts_default_whitespacesymbols = " \t\n\r";
@@ -52,7 +59,11 @@ static cst_string internal_ts_getc(cst_tokenstream *ts);
 static void set_charclass_table(cst_tokenstream *ts)
 {
     int i;
+    #ifdef WASM_NO_LIB
+    WASM_PATCH_memset(ts->charclass,0,256);  /* zero everything */
+    #else
     memset(ts->charclass,0,256);  /* zero everything */
+    #endif /* WASM_NO_LIB */
     
     for (i=0; ts->p_whitespacesymbols[i]; i++)
 	ts->charclass[(unsigned char)ts->p_whitespacesymbols[i]] |= TS_CHARCLASS_WHITESPACE;
@@ -91,7 +102,11 @@ static void extend_buffer(cst_string **buffer,int *buffer_max)
 
     new_max = (*buffer_max)+(*buffer_max)/5;
     new_buffer = cst_alloc(cst_string,new_max);
+    #ifdef WASM_NO_LIB
+    WASM_PATCH_memmove(new_buffer,*buffer,*buffer_max);
+    #else
     memmove(new_buffer,*buffer,*buffer_max);
+    #endif /* WASM_NO_LIB */
     cst_free(*buffer);
     *buffer = new_buffer;
     *buffer_max = new_max;
@@ -326,7 +341,11 @@ static void get_token_postpunctuation(cst_tokenstream *ts)
 	if (t-p >= ts->postp_max) 
 	    extend_buffer(&ts->postpunctuation,&ts->postp_max);
 	/* Copy postpunctuation from token */
+    #ifdef WASM_NO_LIB
+	WASM_PATCH_memmove(ts->postpunctuation,&ts->token[p+1],(t-p));
+    #else
 	memmove(ts->postpunctuation,&ts->token[p+1],(t-p));
+    #endif /* WASM_NO_LIB */
 	/* truncate token at postpunctuation */
 	ts->token[p+1] = '\0';
     }

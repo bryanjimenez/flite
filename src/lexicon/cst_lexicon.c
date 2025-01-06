@@ -37,6 +37,12 @@
 /*  Lexicon related functions                                            */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
 
 #include "cst_features.h"
 #include "cst_lexicon.h"
@@ -351,7 +357,11 @@ static int lex_uncompress_word(char *ucword,int max_size,
 	    length = cst_strlen(l->entry_hufftable[cword[i]]);
 	    if (j+length+1<max_size)
 	    {
+        #ifdef WASM_NO_LIB
+		WASM_PATCH_memmove(ucword+j,l->entry_hufftable[cword[i]],length);
+        #else
 		memmove(ucword+j,l->entry_hufftable[cword[i]],length);
+        #endif /* WASM_NO_LIB */
 		j += length;
 	    }
 	    else

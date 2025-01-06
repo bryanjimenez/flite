@@ -37,6 +37,13 @@
 /*  Waveforms                                                            */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
 #include "cst_string.h"
 #include "cst_val.h"
 #include "cst_wave.h"
@@ -73,10 +80,17 @@ void cst_wave_resize(cst_wave *w,int samples, int num_channels)
     }
     ns = cst_alloc(short,samples*num_channels);
     if (num_channels == w->num_channels)
+    #ifdef WASM_NO_LIB
+	WASM_PATCH_memmove(ns,w->samples,
+		sizeof(short) * 
+		num_channels *
+		(samples < w->num_samples ? samples : w->num_samples));
+    #else
 	memmove(ns,w->samples,
 		sizeof(short) * 
 		num_channels *
 		(samples < w->num_samples ? samples : w->num_samples));
+    #endif /* WASM_NO_LIB */
     cst_free(w->samples);
     w->samples = ns;
     w->num_samples = samples;
@@ -100,7 +114,11 @@ cst_wave *copy_wave(const cst_wave *w)
     n->sample_rate = w->sample_rate;
     n->num_channels = w->num_channels;
     n->type = w->type;
+    #ifdef WASM_NO_LIB
+    WASM_PATCH_memcpy(n->samples,w->samples,sizeof(short)*w->num_samples*w->num_channels);
+    #else
     memcpy(n->samples,w->samples,sizeof(short)*w->num_samples*w->num_channels);
+    #endif /* WASM_NO_LIB */
     return n;
 }
 
@@ -124,8 +142,13 @@ cst_wave *concat_wave(cst_wave *dest, const cst_wave *src)
     orig_nsamps = dest->num_samples * dest->num_channels;
     cst_wave_resize(dest, dest->num_samples + src->num_samples,
 		    dest->num_channels);
+    #ifdef WASM_NO_LIB
+    WASM_PATCH_memcpy(dest->samples + orig_nsamps, src->samples,
+	   src->num_samples * src->num_channels * sizeof(short));
+    #else
     memcpy(dest->samples + orig_nsamps, src->samples,
 	   src->num_samples * src->num_channels * sizeof(short));
 
+    #endif /* WASM_NO_LIB */
     return dest;
 }

@@ -37,7 +37,18 @@
 /*  Some code for byte order support                                     */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
+
+#ifdef WASM_NO_LIB
+#include "flite_patch_stdlib.h"
+#else
 #include <stdlib.h>
+#endif /* WASM_NO_LIB */
 #include "cst_alloc.h"
 #include "cst_endian.h"
 

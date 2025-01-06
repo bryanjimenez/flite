@@ -37,8 +37,18 @@
 /*  US English text analysis functions                                   */
 /*                                                                       */
 /*************************************************************************/
+/*    MODIFIED:                                                          */
+/*    Minimal support for wasm32-unknown-unknown                         */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Dec 2024                                              */
+/*                                                                       */
+/*************************************************************************/
 
+#ifdef WASM_NO_LIB
+#include "flite_patch_ctype.h"
+#else
 #include <ctype.h>
+#endif /* WASM_NO_LIB */
 #include "flite.h"
 #include "usenglish.h"
 #include "us_text.h"
