@@ -131,7 +131,7 @@ cst_wave *lpc_resynth_windows(cst_lpcres *lpcres)
 			   lpcres->lpc_range) + lpcres->lpc_min;
 	}
     #ifdef WASM_NO_LIB
-	WASM_PATCH_memset(outbuf,0,sizeof(float)*(1+lpcres->num_channels));
+	__builtin_memset(outbuf,0,sizeof(float)*(1+lpcres->num_channels));
     #else
 	memset(outbuf,0,sizeof(float)*(1+lpcres->num_channels)); 
     #endif /* WASM_NO_LIB */

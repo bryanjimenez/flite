@@ -399,7 +399,7 @@ static void vocoder(double p, double *mc,
    
     vs->p1 = p;
     #ifdef WASM_NO_LIB
-    WASM_PATCH_memmove(vs->c,vs->cc,sizeof(double)*(m+1));
+    __builtin_memmove(vs->c,vs->cc,sizeof(double)*(m+1));
     #else
     memmove(vs->c,vs->cc,sizeof(double)*(m+1));
     #endif /* WASM_NO_LIB */
@@ -605,7 +605,7 @@ static void freqt (double *c1, int m1, double *c2, int m2, double a, VocoderSetu
    }
 
     #ifdef WASM_NO_LIB
-   WASM_PATCH_memmove(c2,vs->g,sizeof(double)*(m2+1));
+   __builtin_memmove(c2,vs->g,sizeof(double)*(m2+1));
     #else
    memmove(c2,vs->g,sizeof(double)*(m2+1));
     #endif /* WASM_NO_LIB */

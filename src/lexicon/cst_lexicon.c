@@ -358,7 +358,7 @@ static int lex_uncompress_word(char *ucword,int max_size,
 	    if (j+length+1<max_size)
 	    {
         #ifdef WASM_NO_LIB
-		WASM_PATCH_memmove(ucword+j,l->entry_hufftable[cword[i]],length);
+		__builtin_memmove(ucword+j,l->entry_hufftable[cword[i]],length);
         #else
 		memmove(ucword+j,l->entry_hufftable[cword[i]],length);
         #endif /* WASM_NO_LIB */

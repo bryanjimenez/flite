@@ -158,18 +158,30 @@ int cst_sprintf(char *s, const char *fmt, ...){
             pattern_type = 3;
             if (p_pos==1) {
                 pad_a_len = strlen(p);
+                if(pad_a_len>10){
+                    pad_a_len = 10;
+                }
                 strcpy(pad_a_buf, p);
             } else if(p_pos==2){
                 pad_b_len = strlen(p);
+                if(pad_b_len>10){
+                    pad_b_len = 10;
+                }
                 strcpy(pad_b_buf, p);
             }
         } else if(strcmp(fmt,"%.10s_-_%.10s")==0) {
             pattern_type = 4;
             if (p_pos==1) {
                 pad_a_len = strlen(p);
+                if(pad_a_len>10){
+                    pad_a_len = 10;
+                }
                 strcpy(pad_a_buf, p);
             } else if(p_pos==2){
                 pad_b_len = strlen(p);
+                if(pad_b_len>10){
+                    pad_b_len = 10;
+                }
                 strcpy(pad_b_buf, p);
             }
         } else if(strcmp(fmt,"%s%s")==0) {
@@ -219,49 +231,48 @@ int cst_sprintf(char *s, const char *fmt, ...){
     switch (pattern_type) {
         case 0:
             // "%c%s"
-            WASM_PATCH_memmove(s, one_char, 1);
-            WASM_PATCH_memmove(s+1, content, strlen(content));
+            __builtin_memmove(s, one_char, 1);
+            __builtin_memmove(s+1, content, strlen(content));
             write_len = 1 + strlen(content);
             break;
         case 1:
             // "%.*s#%s#%.*s"
-            WASM_PATCH_memmove(s, pad_a_buf, pad_a_len);
-            WASM_PATCH_memmove(s+pad_a_len, "#", 1);
-            WASM_PATCH_memmove(s+pad_a_len+1, content, strlen(content));
-            WASM_PATCH_memmove(s+pad_a_len+1+strlen(content), "#", 1);
-            WASM_PATCH_memmove(s+pad_a_len+1+strlen(content)+1, pad_b_buf, pad_b_len);
+            __builtin_memmove(s, pad_a_buf, pad_a_len);
+            __builtin_memmove(s+pad_a_len, "#", 1);
+            __builtin_memmove(s+pad_a_len+1, content, strlen(content));
+            __builtin_memmove(s+pad_a_len+1+strlen(content), "#", 1);
+            __builtin_memmove(s+pad_a_len+1+strlen(content)+1, pad_b_buf, pad_b_len);
             write_len = pad_a_len + 1 + strlen(content) + 1 + pad_b_len;
             break;
         case 2:
             // "%.*s%.*s%s"
-            WASM_PATCH_memmove(s, pad_a_buf, pad_a_len);
-            WASM_PATCH_memmove(s+pad_a_len, pad_b_buf, pad_b_len);
-            WASM_PATCH_memmove(s+pad_a_len+pad_b_len, content, strlen(content));
+            __builtin_memmove(s, pad_a_buf, pad_a_len);
+            __builtin_memmove(s+pad_a_len, pad_b_buf, pad_b_len);
+            __builtin_memmove(s+pad_a_len+pad_b_len, content, strlen(content));
             write_len = pad_a_len + pad_b_len + strlen(content);
             break;
         case 3:
             // "%.10s-%.10s"
-            WASM_PATCH_memmove(s, pad_a_buf, pad_a_len);
-            WASM_PATCH_memmove(s+pad_a_len, "-", 1);
-            // FIXME: what?? why? \0 ?
-            WASM_PATCH_memmove(s+pad_a_len+1, pad_b_buf, pad_b_len+1);
-            write_len = pad_a_len + 1 + pad_b_len + 1;
+            __builtin_memmove(s, pad_a_buf, pad_a_len);
+            __builtin_memmove(s+pad_a_len, "-", 1);
+            __builtin_memmove(s+pad_a_len+1, pad_b_buf, pad_b_len);
+            write_len = pad_a_len + 1 + pad_b_len;
             break;
         case 4:
             // "%.10s_-_%.10s"
-            WASM_PATCH_memmove(s, pad_a_buf, pad_a_len);
-            WASM_PATCH_memmove(s+pad_a_len, "_-_", 3);
-            WASM_PATCH_memmove(s+pad_a_len+3, pad_b_buf, pad_b_len);
+            __builtin_memmove(s, pad_a_buf, pad_a_len);
+            __builtin_memmove(s+pad_a_len, "_-_", 3);
+            __builtin_memmove(s+pad_a_len+3, pad_b_buf, pad_b_len);
             write_len = pad_a_len + 3 + pad_b_len;
             break;
         case 5:
             // "%s%s"
-            WASM_PATCH_memmove(s, content, strlen(content));
+            __builtin_memmove(s, content, strlen(content));
             write_len = strlen(content);
             break;
         case 6:
             // "%s%s%s"
-            WASM_PATCH_memmove(s, content, strlen(content));
+            __builtin_memmove(s, content, strlen(content));
             write_len = strlen(content);
             break;
         case 7:
@@ -273,6 +284,8 @@ int cst_sprintf(char *s, const char *fmt, ...){
             log_to_js(err);
             WASM_PATCH_exit(-99);
     }
+
+    s[write_len] = '\0';
     return write_len;
 }
 
