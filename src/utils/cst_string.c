@@ -92,7 +92,7 @@ cst_string *cst_strdup(const cst_string *str)
     {
 	nstr = cst_alloc(cst_string,cst_strlen((const char *)str)+1);
     #ifdef WASM_NO_LIB
-	WASM_PATCH_memmove(nstr,str,cst_strlen((const char *)str)+1);
+	__builtin_memmove(nstr,str,cst_strlen((const char *)str)+1);
     #else
 	memmove(nstr,str,cst_strlen((const char *)str)+1);
     #endif /* WASM_NO_LIB */

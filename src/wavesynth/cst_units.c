@@ -430,7 +430,7 @@ void add_residual(int targ_size, unsigned char *targ_residual,
 
     if (unit_size < targ_size)
     #ifdef WASM_NO_LIB
-	WASM_PATCH_memmove(&targ_residual[((targ_size-unit_size)/2)],
+	__builtin_memmove(&targ_residual[((targ_size-unit_size)/2)],
 		&unit_residual[0],
 		unit_size*sizeof(unsigned char));
     #else
@@ -441,7 +441,7 @@ void add_residual(int targ_size, unsigned char *targ_residual,
 	else
     {
     #ifdef WASM_NO_LIB
-	WASM_PATCH_memmove(&targ_residual[0],
+	__builtin_memmove(&targ_residual[0],
 		&unit_residual[((unit_size-targ_size)/2)],
 		targ_size*sizeof(unsigned char));
     #else
@@ -476,7 +476,7 @@ void add_residual_g721(int targ_size, unsigned char *targ_residual,
 
     if (uunit_size < targ_size)
     #ifdef WASM_NO_LIB
-	WASM_PATCH_memmove(&targ_residual[((targ_size-uunit_size)/2)],
+	__builtin_memmove(&targ_residual[((targ_size-uunit_size)/2)],
 		&unit_residual_unpacked[CST_G721_LEADIN],
 		uunit_size*sizeof(unsigned char));
     #else
@@ -488,7 +488,7 @@ void add_residual_g721(int targ_size, unsigned char *targ_residual,
     else
     {
     #ifdef WASM_NO_LIB
-    WASM_PATCH_memmove(&targ_residual[0],
+    __builtin_memmove(&targ_residual[0],
 		&unit_residual_unpacked[CST_G721_LEADIN+((uunit_size-targ_size)/2)],
 		targ_size*sizeof(unsigned char));
     #else
@@ -560,7 +560,7 @@ void add_residual_g721vuv(int targ_size, unsigned char *targ_residual,
      
     if (uunit_size < targ_size)
     #ifdef WASM_NO_LIB
-	WASM_PATCH_memmove(&targ_residual[((targ_size-uunit_size)/2)],
+	__builtin_memmove(&targ_residual[((targ_size-uunit_size)/2)],
 		&unit_residual_unpacked[offset],
 		uunit_size*sizeof(unsigned char));
     #else
@@ -571,7 +571,7 @@ void add_residual_g721vuv(int targ_size, unsigned char *targ_residual,
     else
     {
     #ifdef WASM_NO_LIB
-	WASM_PATCH_memmove(&targ_residual[0],
+	__builtin_memmove(&targ_residual[0],
 		&unit_residual_unpacked[offset+((uunit_size-targ_size)/2)],
 		targ_size*sizeof(unsigned char));
     #else
@@ -617,7 +617,7 @@ void add_residual_vuv(int targ_size, unsigned char *targ_residual,
      
     if (uunit_size < targ_size)
     #ifdef WASM_NO_LIB
-	WASM_PATCH_memmove(&targ_residual[((targ_size-uunit_size)/2)],
+	__builtin_memmove(&targ_residual[((targ_size-uunit_size)/2)],
 		&unit_residual_unpacked[0],
 		uunit_size*sizeof(unsigned char));
     #else
@@ -628,7 +628,7 @@ void add_residual_vuv(int targ_size, unsigned char *targ_residual,
     else
     {
     #ifdef WASM_NO_LIB
-	WASM_PATCH_memmove(&targ_residual[0],
+	__builtin_memmove(&targ_residual[0],
 		&unit_residual_unpacked[((uunit_size-targ_size)/2)],
 		targ_size*sizeof(unsigned char));
     #else

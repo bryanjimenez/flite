@@ -180,7 +180,7 @@ int cst_wave_append_riff(cst_wave *w,const char *filename)
 	short *xdata = cst_alloc(short,cst_wave_num_channels(w)*
 				 cst_wave_num_samples(w));
     #ifdef WASM_NO_LIB
-    WASM_PATCH_memmove(xdata,cst_wave_samples(w),
+    __builtin_memmove(xdata,cst_wave_samples(w),
 		sizeof(short)*cst_wave_num_channels(w)*
 		cst_wave_num_samples(w));
     #else
@@ -293,7 +293,7 @@ int cst_wave_save_riff_fd(cst_wave *w, cst_file fd)
         short *xdata = cst_alloc(short,cst_wave_num_channels(w)*
 				 cst_wave_num_samples(w));
     #ifdef WASM_NO_LIB
-    WASM_PATCH_memmove(xdata,cst_wave_samples(w),
+    __builtin_memmove(xdata,cst_wave_samples(w),
 		sizeof(short)*cst_wave_num_channels(w)*
 		cst_wave_num_samples(w));
     #else

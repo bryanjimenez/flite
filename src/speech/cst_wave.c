@@ -74,7 +74,7 @@ void cst_wave_resize(cst_wave *w,int samples, int num_channels)
     ns = cst_alloc(short,samples*num_channels);
     if (num_channels == w->num_channels)
     #ifdef WASM_NO_LIB
-	WASM_PATCH_memmove(ns,w->samples,
+	__builtin_memmove(ns,w->samples,
 		sizeof(short) * 
 		num_channels *
 		(samples < w->num_samples ? samples : w->num_samples));
@@ -108,7 +108,7 @@ cst_wave *copy_wave(const cst_wave *w)
     n->num_channels = w->num_channels;
     n->type = w->type;
     #ifdef WASM_NO_LIB
-    WASM_PATCH_memcpy(n->samples,w->samples,sizeof(short)*w->num_samples*w->num_channels);
+    __builtin_memcpy(n->samples,w->samples,sizeof(short)*w->num_samples*w->num_channels);
     #else
     memcpy(n->samples,w->samples,sizeof(short)*w->num_samples*w->num_channels);
     #endif /* WASM_NO_LIB */
@@ -136,7 +136,7 @@ cst_wave *concat_wave(cst_wave *dest, const cst_wave *src)
     cst_wave_resize(dest, dest->num_samples + src->num_samples,
 		    dest->num_channels);
     #ifdef WASM_NO_LIB
-    WASM_PATCH_memcpy(dest->samples + orig_nsamps, src->samples,
+    __builtin_memcpy(dest->samples + orig_nsamps, src->samples,
 	   src->num_samples * src->num_channels * sizeof(short));
     #else
     memcpy(dest->samples + orig_nsamps, src->samples,

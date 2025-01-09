@@ -201,7 +201,7 @@ static void cst_lts_get_state(cst_lts_rule *state,
 			      int rule_size)
 {   /* As some OS's require a more elaborate access than a simple lookup */
     #ifdef WASM_NO_LIB
-    WASM_PATCH_memmove(state,&model[n*rule_size],rule_size);
+    __builtin_memmove(state,&model[n*rule_size],rule_size);
     #else
     memmove(state,&model[n*rule_size],rule_size);
     #endif /* WASM_NO_LIB */

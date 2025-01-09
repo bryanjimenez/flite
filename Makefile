@@ -148,7 +148,7 @@ build-project:
 #	$(eval AR=/usr/bin/ar)
 # llvm-ranlib not needed if using [llvm-ar -s](https://llvm.org/docs/CommandGuide/llvm-ar.html#cmdoption-llvm-ar-arg-s)
 #	$(eval RANLIB=../../../wasi-sdk/build/dist/toolchain/bin/llvm-ranlib)
-	$(eval CFLAGS=-DWASM_NO_LIB -nostdlib -Wall )
+	$(eval CFLAGS=-DWASM_NO_LIB -nostdlib -mbulk-memory -Wall )
 #	$(eval CFLAGS_WASM=$(CFLAGS) -Wl,--strip-all -Wl,--export-dynamic -Wl,--no-entry)
 # Copy patched std-libs for wasm
 	cp $(L_DIR)/flite_patch_ctype.h ./include/
