@@ -159,7 +159,6 @@ build-project:
 #	$(eval CFLAGS_WASM=$(CFLAGS) -Wl,--strip-all -Wl,--export-dynamic -Wl,--no-entry)
 # Copy patched std-libs for wasm
 	cp $(L_DIR)/flite_patch_ctype.h ./include/
-	cp $(L_DIR)/flite_patch_wchar.h ./include/
 	cp $(L_DIR)/flite_patch_math.h ./include/
 	cp $(L_DIR)/flite_patch_stdarg.h ./include/
 	cp $(L_DIR)/flite_patch_stddef.h ./include/

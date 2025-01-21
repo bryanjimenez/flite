@@ -263,7 +263,7 @@ int play_wave(cst_wave *w)
 int play_wave_sync(cst_wave *w, cst_relation *rel,
 		   int (*call_back)(cst_item *))
 {
-    int q,i,n,r;
+    int i,n,r;
     cst_audiodev *ad;
     float r_pos;
     cst_item *item;
@@ -275,7 +275,6 @@ int play_wave_sync(cst_wave *w, cst_relation *rel,
 			 CST_AUDIO_LINEAR16)) == NULL)
 	return CST_ERROR_FORMAT;
 
-    q=0;
     item = relation_head(rel);
     r_pos = w->sample_rate * 0;
     for (i=0; i < w->num_samples; i += r/2)
@@ -297,7 +296,7 @@ int play_wave_sync(cst_wave *w, cst_relation *rel,
 	else
 	    n = w->num_samples-i;
 	r = audio_write(ad,&w->samples[i],n*2);
-	q +=r;
+
 	if (r <= 0)
 	    cst_errmsg("failed to write %d samples\n",n);
     }

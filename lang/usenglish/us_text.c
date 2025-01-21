@@ -427,7 +427,7 @@ static cst_val *us_tokentowords_one(cst_item *token, const char *name)
         if ((val_length(ss) == 2) &&
             (atoi(val_string(val_car(val_cdr(ss)))) <
              atoi(val_string(val_car(ss)))) &&  /* small to large */
-            (abs(cst_strlen(val_string(val_car(val_cdr(ss)))) -
+            (cst_strlen(val_string(val_car(val_cdr(ss))) -
                  cst_strlen(val_string(val_car(ss)))) < 2)) /* not too diff */
         {
             /* Should get 22-23 November, or 1998-1999 right */

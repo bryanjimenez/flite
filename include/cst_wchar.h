@@ -48,14 +48,18 @@
 #define __CST_WCHAR_H__
 
 #ifdef WASM_NO_LIB
-#include "flite_patch_wchar.h"
+typedef int wchar_t;
+
+wchar_t *cst_cstr2wstr(const char *s);
+char *cst_wstr2cstr(const wchar_t *s);
+#define cst_wstrlen(X) __builtin_wcslen(X)
+
 #else
 #include <wchar.h>
-#endif /* WASM_NO_LIB */
 
 wchar_t *cst_cstr2wstr(const char *s);
 char *cst_wstr2cstr(const wchar_t *s);
 
 #define cst_wstrlen(X) wcslen(X)
-
+#endif /* WASM_NO_LIB */
 #endif
