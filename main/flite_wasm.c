@@ -15,7 +15,10 @@ void cst_alloc_debug_summary(void);
 
 #define WASM_EXPORT __attribute__((visibility("default")))
 
+/* ../lang/cmu_us_kal/cmu_us_kal.c */
 cst_voice *register_cmu_us_kal(const char *voxdir);
+/* ../lang/cmu_us_slt/cmu_us_slt.c */
+cst_voice *register_cmu_us_slt(const char *voxdir);
 
 // Expose mechanism to deallocate cached voice
 #ifdef VALGRIND_TEST
@@ -34,7 +37,7 @@ int WASM_EXPORT deallocate_voice(){
 #endif /* VALGRIND_TEST */
 
 result_wave* WASM_EXPORT synth_audio_basic(const char *text){
-    cst_voice *voice = register_cmu_us_kal(NULL);
+    cst_voice *voice = register_cmu_us_slt(NULL);
 
     #ifdef VALGRIND_TEST
     selected_voice = voice;

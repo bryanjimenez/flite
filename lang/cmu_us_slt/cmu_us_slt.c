@@ -37,8 +37,12 @@
 /*  A clustergen voice defintion			                 */
 /*                                                                       */
 /*************************************************************************/
-
-#include <string.h>
+/*    MODIFIED:                                                          */
+/*    Delete duplicate include                                           */
+/*       Authors:  Bryan Jimenez                                         */
+/*          Date:  Jan 2025                                              */
+/*                                                                       */
+/*************************************************************************/
 #include "flite.h"
 #include "cst_cg.h"
 
