@@ -14,7 +14,7 @@ typedef struct  result_wave_struct {
 } result_wave;
 
 /* Wasm Exported*/
-result_wave* synth_audio_basic(const char *text);
+result_wave* synth_audio(const char *text, unsigned short voice_type);
 
 /* Valgrind test exported */
 #ifdef CST_DEBUG_MALLOC

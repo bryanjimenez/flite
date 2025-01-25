@@ -36,8 +36,19 @@ int WASM_EXPORT deallocate_voice(){
 }
 #endif /* VALGRIND_TEST */
 
-result_wave* WASM_EXPORT synth_audio_basic(const char *text){
-    cst_voice *voice = register_cmu_us_slt(NULL);
+result_wave* WASM_EXPORT synth_audio(const char *text, unsigned short voice_type){
+
+    cst_voice *voice = NULL;
+    switch (voice_type) {
+        case 0:
+            voice = register_cmu_us_kal(NULL);
+            break;
+        case 1:
+            voice = register_cmu_us_slt(NULL);
+            break;
+        default:
+            voice = register_cmu_us_kal(NULL);
+    }
 
     #ifdef VALGRIND_TEST
     selected_voice = voice;
