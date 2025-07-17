@@ -209,6 +209,7 @@ void cst_free(void *p)
 
 #endif
 
+#ifdef CST_DEBUG_MALLOC
 #ifdef CST_DEBUG_MALLOC_TRACE
 
 void cst_find_unfreed()
@@ -230,15 +231,18 @@ void cst_find_unfreed()
     }
     cst_dbgmsg("total unfreed %d\n", t);
 }
+#endif /* CST_DEBUG_MALLOC_TRACE */
 
 void cst_alloc_debug_summary()
 {
+#ifdef CST_DEBUG_MALLOC_TRACE
     cst_find_unfreed();
+#endif
     printf("allocated %d freed %d max %d imax %d calls %d out %d\n",
 	   cst_allocated, cst_freed, cst_alloc_max, 
 	   cst_alloc_imax, cst_alloc_num_calls, cst_alloc_out);
 }
-#endif
+#endif /* CST_DEBUG_MALLOC */
 
 #ifdef UNDER_CE
 cst_alloc_context new_alloc_context(int size)

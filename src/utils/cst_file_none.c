@@ -64,6 +64,7 @@ int cst_fprintf(cst_file fh, const char *fmt, ...)
   return 0;
 }
 
+// writes an integer into a string (char*)
 int cst_int_to_ascii(char* string, int number){
     int write_len = 0;
 
@@ -104,15 +105,15 @@ int cst_sprintf(char *s, const char *fmt, ...){
     char* p = (char*) fmt;
     int p_num = -1;
 
-    char one_char[1];
+    char one_char[1] = "";
     int pad_a_len = -1;
     int pad_b_len = -1;
-    char pad_a_buf[16];
-    char pad_b_buf[16];
-    char content[128];
+    char pad_a_buf[16] = "";
+    char pad_b_buf[16] = "";
+    char content[128] = "";
 
     char *errMsg = "cst_sprintf: Unknown type ";
-    char err[64];
+    char err[64] = "";
     strcpy(err, errMsg);
 
     va_start(arguments, fmt);
@@ -209,13 +210,20 @@ int cst_sprintf(char *s, const char *fmt, ...){
         (pattern_type==1 && (p_pos==0 || p_pos==3))) {
             // The argument is numeric
             p_num = va_arg(arguments, int);
-        } else if (pattern_type==7){
+        } else if (pattern_type==7 && p_pos==0){
             // The argument is numeric
             p_num = va_arg(arguments, int);
-            p = NULL;
         } else if (pattern_type==0 && p_pos==0){
             // The argument is a character
             one_char[0] = (unsigned char)va_arg(arguments, unsigned int);
+        } else if (
+            ((pattern_type==1 || pattern_type==2) && p_pos==5) ||
+            ((pattern_type==3 || pattern_type==4 || pattern_type==5) && p_pos==2) ||
+            (pattern_type==6 && p_pos==3) ||
+            (pattern_type==7 && p_pos==1)
+        ){
+            // exit loop no more expected parameters
+            p = NULL;
         } else {
             // The argument is string
             p = va_arg(arguments, char*);

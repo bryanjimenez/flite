@@ -129,6 +129,12 @@ cst_utterance *clunits_dump_units(cst_utterance *utt)
     return utt;
 }
 
+#ifdef WASM_NO_LIB
+static cst_utterance *clunits_select(cst_utterance *utt)
+{
+    return NULL;
+}
+#else
 static cst_utterance *clunits_select(cst_utterance *utt)
 {
     cst_viterbi *vd;
@@ -206,12 +212,19 @@ static cst_utterance *clunits_select(cst_utterance *utt)
 
     return utt;
 }
+#endif /* WASM_NO_LIB */
 
 /* This is used to add incremental target weighting to candidates */
 /* It has been tuned but as the candidates are not actually ordered */
 /* doing this is meaningless -- but *is* better */
 #define clunits_target_weight 70
 
+#ifdef WASM_NO_LIB
+static cst_vit_cand *cl_cand(cst_item *i,cst_viterbi *vd)
+{
+    return NULL;
+}
+#else
 static cst_vit_cand *cl_cand(cst_item *i,cst_viterbi *vd)
 {
     const char *unit_type;
@@ -271,7 +284,16 @@ static cst_vit_cand *cl_cand(cst_item *i,cst_viterbi *vd)
 
     return all;
 }
+#endif /* WASM_NO_LIB */
 
+#ifdef WASM_NO_LIB
+static cst_vit_path *cl_path(cst_vit_path *p,
+			     cst_vit_cand *c,
+			     cst_viterbi *vd)
+{
+    return NULL;
+}
+#else
 static cst_vit_path *cl_path(cst_vit_path *p,
 			     cst_vit_cand *c,
 			     cst_viterbi *vd)
@@ -326,6 +348,7 @@ static cst_vit_path *cl_path(cst_vit_path *p,
 
     return np;
 }
+#endif /* WASM_NO_LIB */
 
 static int optimal_couple_frame(cst_clunit_db *cludb, int u0, int u1,
 				cst_distfunc dfunc,

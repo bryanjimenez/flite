@@ -7,9 +7,9 @@
 /*************************************************************************/
 
 typedef struct  result_wave_struct {
-    int sample_rate;
-    int num_samples;
-    int num_channels;
+    unsigned int sample_rate;
+    unsigned int num_samples;
+    unsigned short num_channels;
     short *samples;
 } result_wave;
 
