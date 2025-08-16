@@ -43,6 +43,9 @@
 #include "cst_alloc.h"
 #include "cst_clunits.h"
 #include "cst_cg.h"
+#ifdef WASM_NO_LIB
+#include "flite_patch_logging.h"
+#endif /* WASM_NO_LIB */
 
 #ifdef WIN32
 /* For Visual Studio 2012 global variable definitions */
@@ -77,11 +80,20 @@ int flite_init()
 
 int flite_voice_dump(cst_voice *voice, const char *filename)
 {
+#ifdef WASM_NO_LIB
+    unimplemented("flite_voice_dump");
+    return 0;
+#endif /* WASM_NO_LIB */
     return cst_cg_dump_voice(voice,filename);
 }
 
 cst_voice *flite_voice_load(const char *filename)
 {
+#ifdef WASM_NO_LIB
+    unimplemented("flite_voice_load");
+    return NULL;
+#endif /* WASM_NO_LIB */
+
     /* Currently only supported for CG voices */
     /* filename make be a local pathname or a url (http:/file:) */
     cst_voice *v = NULL;
@@ -135,6 +147,11 @@ int flite_add_lang(const char *langname,
 
 cst_voice *flite_voice_select(const char *name)
 {
+#ifdef WASM_NO_LIB
+    unimplemented("flite_voice_select");
+    return NULL;
+#endif /* WASM_NO_LIB */
+
     const cst_val *v;
     cst_voice *voice;
 
