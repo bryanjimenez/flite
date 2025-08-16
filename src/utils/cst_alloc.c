@@ -52,6 +52,9 @@
 #include <windows.h>
 #endif /* UNDER_CE */
 
+#if defined WASM_NO_LIB && defined CST_DEBUG_MALLOC
+#include "flite_wasm.h"
+#endif
 /* define this if you want to trace memory usage */
 /* #define CST_DEBUG_MALLOC */
 /* #define CST_DEBUG_MALLOC_TRACE */
@@ -238,9 +241,14 @@ void cst_alloc_debug_summary()
 #ifdef CST_DEBUG_MALLOC_TRACE
     cst_find_unfreed();
 #endif
+#ifdef WASM_NO_LIB
+rust_print_summary(cst_allocated, cst_freed, cst_alloc_max,
+    cst_alloc_imax, cst_alloc_num_calls, cst_alloc_out);
+#else
     printf("allocated %d freed %d max %d imax %d calls %d out %d\n",
 	   cst_allocated, cst_freed, cst_alloc_max, 
 	   cst_alloc_imax, cst_alloc_num_calls, cst_alloc_out);
+#endif /* WASM_NO_LIB */
 }
 #endif /* CST_DEBUG_MALLOC */
 

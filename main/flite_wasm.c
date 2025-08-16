@@ -9,6 +9,10 @@
 #include "cst_synth.h"
 #include "flite_wasm.h"
 
+#ifdef CST_DEBUG_MALLOC
+void cst_alloc_debug_summary(void);
+#endif
+
 #define WASM_EXPORT __attribute__((visibility("default")))
 
 cst_voice *register_cmu_us_kal(const char *voxdir);
@@ -22,6 +26,7 @@ int WASM_EXPORT deallocate_voice(){
 
 // use Flite's built-in malloc usage summary
 #ifdef CST_DEBUG_MALLOC
+    rust_print_msg("flite CST_DEBUG_MALLOC: ");
     cst_alloc_debug_summary();
 #endif
     return 0;

@@ -15,3 +15,16 @@ typedef struct  result_wave_struct {
 
 /* Wasm Exported*/
 result_wave* synth_audio_basic(const char *text);
+
+/* Valgrind test exported */
+#ifdef CST_DEBUG_MALLOC
+void rust_print_msg(const char *msg);
+void rust_print_summary(
+    int cst_allocated,
+    int cst_freed,
+    int cst_alloc_max,
+    int cst_alloc_imax,
+    int cst_alloc_num_calls,
+    int cst_alloc_out
+);
+#endif
